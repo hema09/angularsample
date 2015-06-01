@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app="exampleApp">
+<head>
+	<title>demo</title>
+	<link href="bootstrap.css" rel="stylesheet">
+	<link href="bootstrap-theme.css" rel="stylesheet">
+	<script src="angular.js"></script>
+	<script src="filters.js"></script>
+	<script>
+		var app = angular.module("exampleApp",
+			["exampleApp.Filters", "exampleApp.Services", "exampleApp.Controllers", "exampleApp.Directives"]);
+		
+		app.constant("startTime", new Date().toLocaleTimeString());
+		app.config(function(startTime) {
+			console.log("Main module config:" + startTime);
+		});
+		app.run(function(startTime) {
+			console.log("Main module run:" + startTime);
+		});
+
+		angular.module("exampleApp.Controllers", []).controller("dayCtrl",function($scope, days) {
+			$scope.day = days.today;
+			$scope.tomorrow = days.tomorrow;
+			var items = [{"item" : "Item1", "done" : false}, {"item" : "Item2", "done" : true}, {"item" : "Item3", "done" : false}, {"item" : "Item4", "done" : true}];
+			$scope.items = items;
+		});
+
+		angular.module("exampleApp.Directives", []).directive("highlight", function($filter) {
+			var tempFilter = $filter("dayName"); // get dayName filter
+			return function(scope, element, attrs) {
+				if(tempFilter(scope.day) == attrs["highlight"]) {
+					element.css("color", "red");
+				}
+			}
+		});
+		
+		var now = new Date();
+		app.value("nowValue", now);
+		
+
+		angular.module("exampleApp.Services", [])
+			.service("days", function(nowValue) {
+				this.today = nowValue.getDay();
+				this.tomorrow = (this.today + 1)%7;
+			})
+			.config(function() {
+				console.log("Services module config: (no time)");
+			})
+			.run(function(startTime) {
+				console.log("Services module run:" + startTime);
+			});
+	</script>
+	<style>
+	.odd {background-color: lightcoral;}
+	.even {background-color: lavenderblush;}
+	</style>
+</head>
+<body>
+	<div class="panel">
+		<div class="page-header">
+			<h3>Sample App</h3>
+		</div>
+		<div ng-controller="dayCtrl">
+			<p highlight="Friday">Today is {{day || "unknown" | dayName}}</p>
+			<p>Tomorrow is {{tomorrow | dayName}}</p>
+			<table class="table">
+				<thead>
+					<th>#</th>
+					<th>Item</th>
+					<th>Done?</th>
+				</thead>
+				<tr ng-repeat="prop in items" ng-class="$odd? 'odd' : 'even'">
+					<td>{{$index + 1}}</td>
+					<td>{{prop.item}}</td>
+					<td><span ng-if="$first || $last">{{prop.done}}</span></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

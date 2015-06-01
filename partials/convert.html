@@ -1,0 +1,24 @@
+<!-- xml to json and vice-versa -->
+<div id="withfixednav">
+	<div class="container">
+		<div class="well col-sm-6" style="padding-right: 10px;">
+			<form>
+				<div class="form-group">
+					<label for="data">Input</label>
+					<textarea class="form-control" rows="20" id="data" placeholder="put json/xml content here.." ng-model="data"></textarea>
+				</div>
+				<button class="btn btn-default" ng-click="formatdata(data,'jsontoxml')">JSON->XML</button>
+				<button class="btn btn-default" ng-click="formatdata(data,'xmltojson')">XML->JSON</button>
+			</form>
+		</div>
+		<div class="well col-sm-6">
+			<form>
+				<div class="form-group">
+					<label for="out">Input</label>
+					<textarea class="form-control" rows="20" rows="20" id="out">{{outputdata}}</textarea>
+				</div>
+				<button class="btn btn-default">Copy</button>
+			</form>
+		</div>
+	</div>
+</div>
